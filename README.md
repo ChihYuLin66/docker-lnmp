@@ -3,6 +3,7 @@
 ### Introduction
 
 From [PHPDocker.io](PHPDocker.io) generated.
+
 ---
 
 ### install
@@ -13,12 +14,12 @@ docker-compose up -d
 
 ### Usage
 
-**nginx**
+**nginx**  
 setting server in `./nginx/nginx.conf`
 
-**php**
+**php**  
 setting php.ini in `./php73/php-ini-overrides.ini`
 
-**phpmyadmin**
-[link](localhost:8080)
+**phpmyadmin**  
+[localhost:8080](localhost:8080)
 
