@@ -2,6 +2,7 @@ version: '3'
 
 services:
     mariadb:
+        container_name: mariadb
         build: mariadb
         # working_dir: /var/www/html
         volumes:
@@ -16,6 +17,7 @@ services:
             - '6608:3306'
 
     nginx:
+        container_name: nginx
         image: 'nginx:alpine'
         working_dir: /var/www/html
         volumes:            
@@ -25,17 +27,24 @@ services:
             - '80:80'
 
     php73:
-        build: php73
+        container_name: php73
+        build: 
+            context: ./php73
+            args:
+                - NORMAL_USER=user
+                - NORMAL_GROUP=user
         working_dir: /var/www/html
         volumes:
             - /var/www/html:/var/www/html
             - ./php73/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
+    
     phpmyadmin:
+        container_name: phpmyadmin
         image: phpmyadmin
         restart: always
         ports:
             - 8080:80
-        environment:
+        environment:            
             - PMA_ARBITRARY=1
             - PMA_VERBOSE=mariadb
             - PMA_HOST=mariadb

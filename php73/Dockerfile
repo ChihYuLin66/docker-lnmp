@@ -58,3 +58,14 @@ RUN export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" |
      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
      nvm install 12.22.1 && \
      nvm use 12.22.1
+
+####################################
+# Create normal group and user 
+####################################
+ARG NORMAL_USER 
+ENV NORMAL_USER=${NORMAL_USER}
+ARG NORMAL_GROUP 
+ENV NORMAL_GROUP=${NORMAL_GROUP}
+
+RUN groupadd -g 1000 ${NORMAL_GROUP}
+RUN useradd -d /home/${NORMAL_USER} -g ${NORMAL_GROUP} -s /bin/bash ${NORMAL_USER}
