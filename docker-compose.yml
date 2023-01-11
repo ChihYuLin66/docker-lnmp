@@ -28,7 +28,9 @@ services:
             - '80:80'
     php56:
         container_name: php56
-        image: 'phpdockerio/php56-fpm'
+        build: 
+            context: ./php56
+        # image: 'phpdockerio/php56-fpm'
         working_dir: /var/www/html
         volumes:
             - /var/www/html:/var/www/html
