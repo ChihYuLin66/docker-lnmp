@@ -2,7 +2,7 @@
 
 ### Introduction
 
-From [PHPDocker.io](PHPDocker.io) generated.
+From [PHPDocker.io](https://phpdocker.io/) generated.
 
 ---
 
@@ -10,6 +10,13 @@ From [PHPDocker.io](PHPDocker.io) generated.
 ```bash
 docker-compose up -d 
 ```
+
+### init
+```bash
+mkdir nginx
+touch nginx/nginx.conf
+```
+
 ---
 
 ### Usage
