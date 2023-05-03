@@ -1,41 +1,59 @@
 version: '3'
 
 services:
-    mariadb:
-        container_name: mariadb
-        build: mariadb
-        # working_dir: /var/www/html
-        volumes:
-            - ~/data/mariadb:/var/lib/mysql
-        environment:
-            - TZ=Asia/Taipei
-            - MYSQL_ROOT_PASSWORD=root
-            - MYSQL_DATABASE=default
-            - MYSQL_USER=default
-            - MYSQL_PASSWORD=secret
-        ports:
-            - '6608:3306'
-
     nginx:
         container_name: nginx
         image: 'nginx:alpine'
         working_dir: /var/www/html
-        volumes:            
-            - /var/www/html:/var/www/html
-            - './nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
-            - './nginx/log:/var/log/nginx'
+        volumes:
+            # - ${NGINX_CONFIG_PATH}:/etc/nginx/conf.d/default.conf
+            # - ${NGINX_CONFIG_DEFAULT_PATH}:/etc/nginx/conf.d/default.conf
+            - ${NGINX_LOG_PATH}:/var/log/nginx
+            - ${NGINX_SITES_PATH}:/etc/nginx/sites-enable
+        ports: 
+            - "${NGINX_HTTP_PORT}:80"
+            - "${NGINX_HTTPS_PORT}:443"
+    mariadb:
+        container_name: mariadb
+        build: mariadb
         ports:
-            - '80:80'
-    # php56:
-    #     container_name: php56
-    #     build: 
-    #         context: ./php56
-    #     # image: 'phpdockerio/php56-fpm'
-    #     working_dir: /var/www/html
-    #     volumes:
-    #         - /var/www/html:/var/www/html
-    #         - ./php56/php-ini-overrides.ini:/etc/php/5.6/fpm/conf.d/99-overrides.ini
-
+            - '${MARIADB_PORT}:3306'
+        volumes:
+            - ./mariadb/my.cnf:/etc/mysql/conf.d/my.cnf
+            - ~/data/mariadb:/var/lib/mysql
+        environment:
+            - TIMEZONE=${TIMEZONE}
+            - MARIADB_DATABASE=${MARIADB_DATABASE}
+            - MARIADB_USER=${MARIADB_USER}
+            - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+            - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    mysql8: 
+        container_name: mysql8
+        build: mysql8
+        ports:
+            - "${MYSQL8_PORT}:3306"
+        volumes:
+            - ./mysql8/my.cnf:/etc/mysql/conf.d/my.cnf
+        environment:
+            - TIMEZONE=${TIMEZONE}
+            - MYSQL_DATABASE=${MYSQL8_DATABASE}
+            - MYSQL_USER=${MYSQL8_USER}
+            - MYSQL_PASSWORD=${MYSQL8_PASSWORD}
+            - MYSQL_ROOT_PASSWORD=${MYSQL8_ROOT_PASSWORD}
+    php56:
+        container_name: php56
+        build: 
+            context: ./php56
+            args: 
+                - NORMAL_GROUP=${NORMAL_GROUP}
+                - NORMAL_USER=${NORMAL_USER}
+        expose:
+            - "9000"
+        volumes:
+            - ${APP_CODE_PATH}:/var/www/html
+            - ./php56/php-ini-overrides.ini:/etc/php/5.6/fpm/conf.d/99-overrides.ini
+        environment:
+            - TIMEZONE=${TIMEZONE}
     php73:
         container_name: php73
         build: 
@@ -43,11 +61,21 @@ services:
             args:
                 - NORMAL_USER=user
                 - NORMAL_GROUP=user
-        working_dir: /var/www/html
+        expose:
+            - "9000"
         volumes:
-            - /var/www/html:/var/www/html
             - ./php73/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
-    
+    php82:
+        container_name: php82
+        build: 
+            context: ./php82
+            args: 
+                - NORMAL_GROUP=${NORMAL_GROUP}
+                - NORMAL_USER=${NORMAL_USER}
+        expose:
+            - "9000"
+        volumes:
+            - ./php82/php-ini-overrides.ini:/etc/php/8.2/fpm/conf.d/99-overrides.ini        
     phpmyadmin:
         container_name: phpmyadmin
         image: phpmyadmin

@@ -1,3 +1,13 @@
+
+.env
+
+# sql
+my.cnf
+
+# server 
 nginx/nginx.conf
-php73/php-ini-overrides.ini
 nginx/log
+nginx/sites
+
+# php
+php-ini-overrides.ini

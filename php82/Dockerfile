@@ -20,25 +20,48 @@ RUN echo ${TIMEZONE} > /etc/timezone
 RUN rm -f /etc/localtime
 RUN ln -fs /usr/share/zoneinfo/Asia/Taipei /etc/localtime
 
+####################################
+# Install php 8.2 tool and initial global config 
+####################################
+# Initial php8.2 use node version
+ARG PHP82_NODE_VERSION 
+ENV PHP82_NODE_VERSION=${PHP82_NODE_VERSION}
+
+# Install few packages before add PPA tool
+# RUN apt-get install -y lsb-release gnupg2 ca-certificates apt-transport-https software-properties-common
+RUN apt-get update \
+    && apt-get install -y gnupg gosu ca-certificates supervisor sqlite3 libcap2-bin libpng-dev
+
+# Add the PPA for PHP 8.2
 RUN add-apt-repository ppa:ondrej/php
 
+# Update software list and install php 
 RUN apt-get update \
     && apt-get install -y \ 
-    php7.3-fpm \
-    php7.3-common \
-    php7.3-mysql \
-    php7.3-xml \
-    php7.3-xmlrpc \
-    php7.3-curl \
-    php7.3-gd \
-    php7.3-imagick \
-    php7.3-cli \
-    php7.3-dev \
-    php7.3-imap \
-    php7.3-mbstring \
-    php7.3-opcache \
-    php7.3-soap \
-    php7.3-zip \
+    php8.2 \
+    php8.2-fpm \
+    php8.2-common \
+    php8.2-mysql \
+    php8.2-xml \
+    php8.2-xmlrpc \
+    php8.2-curl \
+    php8.2-gd \
+    php8.2-imagick \
+    php8.2-cli \
+    php8.2-dev \
+    php8.2-imap \
+    php8.2-mbstring \
+    php8.2-opcache \
+    php8.2-soap \
+    php8.2-zip \
+    php8.2-bcmath \
+    php8.2-msgpack \
+    php8.2-igbinary \
+    php8.2-redis \
+    php8.2-swoole \
+    php8.2-memcached \
+    php8.2-pcov \
+    php8.2-xdebug \
     unzip
 
 ####################################
@@ -52,7 +75,6 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Set debconf to run non-interactively
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-
 
 ####################################
 # Install Nodejs, npm, nvm

@@ -6,16 +6,18 @@ From [PHPDocker.io](https://phpdocker.io/) generated.
 
 ---
 
-### install
-```bash
-docker-compose up -d 
-```
-
 ### init
 ```bash
 mkdir nginx
 touch nginx/nginx.conf
 ```
+
+
+### install
+```bash
+docker-compose up -d 
+```
+
 
 ---
 

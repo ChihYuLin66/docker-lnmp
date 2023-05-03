@@ -1,14 +1,24 @@
-ARG MARIADB_VERSION=latest
-FROM mariadb:10.6
+
+# MariaDB 5.5  => MySQL 5.5
+# MariaDB 10.0 => MySQL 5.6
+# MariaDB 10.1 => MySQL 5.7
+# MariaDB 10.2 => MySQL 5.7 / 8.0
+# MariaDB 10.3 => MySQL 5.7 / 8.0
+# MariaDB 10.4 => MySQL 5.7 / 8.0
+# MariaDB 10.5 => MySQL 8.0
+
+FROM mariadb:10.4
 
 #####################################
 # Set Timezone
 #####################################
 
-ARG TZ=Asia/Taipei
-ENV TZ ${TZ}
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && chown -R mysql:root /var/lib/mysql/
-# RUN chmod -R 644 /etc/mysql/conf.d/my.cnf
+ARG TIMEZONE
+ENV TIMEZONE=${TIMEZONE}
+RUN ln -snf /usr/share/zoneinfo/$TIMEZONE /etc/localtime && \ 
+    echo $TIMEZONE > /etc/timezone && \ 
+    chown -R mysql:root /var/lib/mysql/
+
 
 CMD ["mysqld"]
 
