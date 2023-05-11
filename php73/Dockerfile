@@ -1,6 +1,5 @@
 FROM phusion/baseimage:0.11
-WORKDIR "/var/www/html"
-
+		
 ####################################
 # Update and install network tools, set system default timezone
 ####################################
@@ -12,13 +11,27 @@ RUN apt-get install -y \
     telnet \
     net-tools \
     iputils-ping \
-    ntp \ 
-    unzip
+    ntp
     
 RUN apt install -y wget software-properties-common
 RUN echo ${TIMEZONE} > /etc/timezone
 RUN rm -f /etc/localtime
 RUN ln -fs /usr/share/zoneinfo/Asia/Taipei /etc/localtime
+
+####################################
+# Create normal group and user 
+####################################
+ARG NORMAL_USER 
+ENV NORMAL_USER=${NORMAL_USER}
+ARG NORMAL_GROUP 
+ENV NORMAL_GROUP=${NORMAL_GROUP}
+
+RUN groupadd -g 1000 ${NORMAL_GROUP}
+RUN useradd -d /home/${NORMAL_USER} -g ${NORMAL_GROUP} -s /bin/bash ${NORMAL_USER}
+
+####################################
+# Install php
+####################################
 
 RUN add-apt-repository ppa:ondrej/php
 
@@ -40,6 +53,8 @@ RUN apt-get update \
     php7.3-soap \
     php7.3-zip \
     unzip
+
+WORKDIR /var/www
 
 ####################################
 # Install composer tool 
@@ -63,13 +78,22 @@ RUN export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" |
      nvm install 12.22.1 && \
      nvm use 12.22.1
 
-####################################
-# Create normal group and user 
-####################################
-ARG NORMAL_USER 
-ENV NORMAL_USER=${NORMAL_USER}
-ARG NORMAL_GROUP 
-ENV NORMAL_GROUP=${NORMAL_GROUP}
+# Clear cache
+RUN apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  /tmp/* \
+  /var/tmp/*
 
-RUN groupadd -g 1000 ${NORMAL_GROUP}
-RUN useradd -d /home/${NORMAL_USER} -g ${NORMAL_GROUP} -s /bin/bash ${NORMAL_USER}
+# Add config files
+ADD init /init
+
+# run init script
+RUN chmod +x /init/init.sh
+RUN /init/init.sh
+
+# run PHP7.3-fpm on startup
+ADD my_init.d/03_php73.sh /etc/my_init.d/03_php73.sh
+RUN chmod +x /etc/my_init.d/03_php73.sh
+
+# clear cache.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
