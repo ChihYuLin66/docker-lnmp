@@ -15,7 +15,7 @@ services:
         expose:
             - "9000"
         volumes:
-            - ${APP_CODE_PATH}:/var/www/html
+            - ${APP_CODE_PATH}:${CONTAINER_CODE_PATH}:cached
             - ./php56/php-ini-overrides.ini:/etc/php/5.6/fpm/conf.d/99-overrides.ini
             - ${PHP56_LOG_PATH}:/var/log/php56
         environment:
@@ -30,9 +30,9 @@ services:
                 - NORMAL_USER=${NORMAL_GROUP}
                 - NORMAL_GROUP=${NORMAL_USER}
         expose:
-            - "9007"
+            - "9000"
         volumes:
-            - ${APP_CODE_PATH}:/var/www/html
+            - ${APP_CODE_PATH}:${CONTAINER_CODE_PATH}:cached
             - ./php73/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
             - ${PHP73_LOG_PATH}:/var/log/php73
         networks:
@@ -45,9 +45,9 @@ services:
                 - NORMAL_GROUP=${NORMAL_GROUP}
                 - NORMAL_USER=${NORMAL_USER}
         expose:
-            - "9008"
+            - "9000"
         volumes:
-            - ${APP_CODE_PATH}:/var/www/html
+            - ${APP_CODE_PATH}:${CONTAINER_CODE_PATH}:cached
             - ./php82/php-ini-overrides.ini:/etc/php/8.2/fpm/conf.d/99-overrides.ini    
             - ${PHP82_LOG_PATH}:/var/log/php82
         networks:
