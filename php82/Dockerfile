@@ -93,8 +93,8 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash 
 RUN export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")" && \
      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
-     nvm install 12.22.1 && \
-     nvm use 12.22.1
+     nvm install 16.20.0 && \
+     nvm use 16.20.0
 
 
 # Clear cache
